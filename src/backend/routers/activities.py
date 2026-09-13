@@ -48,7 +48,7 @@ def get_activities(
         normalized_difficulty = difficulty.strip().lower()
 
         if normalized_difficulty == "all":
-            query["difficulty"] = {"$exists": False}
+            query["difficulty"] = None
         else:
             selected_level = next(
                 (level for level in DIFFICULTY_LEVELS if level.lower() == normalized_difficulty),
@@ -63,7 +63,7 @@ def get_activities(
 
             query["$or"] = [
                 {"difficulty": selected_level},
-                {"difficulty": {"$exists": False}}
+                {"difficulty": None}
             ]
     
     # Query the database

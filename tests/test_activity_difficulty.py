@@ -102,6 +102,18 @@ class GetActivitiesDifficultyTests(unittest.TestCase):
                     "participants": [],
                     "max_participants": 15,
                 },
+                {
+                    "_id": "Drama Club",
+                    "description": "Perform on stage",
+                    "schedule_details": {
+                        "days": ["Wednesday"],
+                        "start_time": "15:30",
+                        "end_time": "17:30",
+                    },
+                    "difficulty": None,
+                    "participants": [],
+                    "max_participants": 20,
+                },
             ]
         )
 
@@ -113,18 +125,18 @@ class GetActivitiesDifficultyTests(unittest.TestCase):
 
         self.assertEqual(
             set(activities.keys()),
-            {"Chess Club", "Math Club", "Art Club"},
+            {"Chess Club", "Math Club", "Art Club", "Drama Club"},
         )
 
     def test_specific_difficulty_includes_level_agnostic_activities(self):
         activities = activities_router.get_activities(difficulty="Beginner")
 
-        self.assertEqual(set(activities.keys()), {"Chess Club", "Art Club"})
+        self.assertEqual(set(activities.keys()), {"Chess Club", "Art Club", "Drama Club"})
 
     def test_all_difficulty_returns_only_level_agnostic_activities(self):
         activities = activities_router.get_activities(difficulty="All")
 
-        self.assertEqual(set(activities.keys()), {"Art Club"})
+        self.assertEqual(set(activities.keys()), {"Art Club", "Drama Club"})
 
     def test_invalid_difficulty_raises_bad_request(self):
         with self.assertRaises(HTTPException) as context:

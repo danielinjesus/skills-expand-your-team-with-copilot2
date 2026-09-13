@@ -68,20 +68,42 @@
 
             <div class="filter-container">
               <div class="filter-label">Filter by difficulty:</div>
-              <div class="difficulty-filters" id="difficulty-filters">
-                <button class="difficulty-filter" data-difficulty="Beginner">
+              <div
+                class="difficulty-filters"
+                id="difficulty-filters"
+                role="radiogroup"
+                aria-label="Filter by difficulty"
+              >
+                <button
+                  class="difficulty-filter"
+                  data-difficulty="Beginner"
+                  role="radio"
+                  aria-checked="false"
+                >
                   Beginner
                 </button>
                 <button
                   class="difficulty-filter"
                   data-difficulty="Intermediate"
+                  role="radio"
+                  aria-checked="false"
                 >
                   Intermediate
                 </button>
-                <button class="difficulty-filter" data-difficulty="Advanced">
+                <button
+                  class="difficulty-filter"
+                  data-difficulty="Advanced"
+                  role="radio"
+                  aria-checked="false"
+                >
                   Advanced
                 </button>
-                <button class="difficulty-filter" data-difficulty="All">
+                <button
+                  class="difficulty-filter"
+                  data-difficulty="All"
+                  role="radio"
+                  aria-checked="false"
+                >
                   All Levels
                 </button>
               </div>

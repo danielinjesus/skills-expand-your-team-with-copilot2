@@ -110,14 +110,19 @@ document.addEventListener("DOMContentLoaded", () => {
   function setDifficultyFilter(difficulty) {
     if (currentDifficulty === difficulty) {
       currentDifficulty = "";
-      difficultyFilters.forEach((btn) => btn.classList.remove("active"));
+      difficultyFilters.forEach((btn) => {
+        btn.classList.remove("active");
+        btn.setAttribute("aria-checked", "false");
+      });
     } else {
       currentDifficulty = difficulty;
       difficultyFilters.forEach((btn) => {
         if (btn.dataset.difficulty === difficulty) {
           btn.classList.add("active");
+          btn.setAttribute("aria-checked", "true");
         } else {
           btn.classList.remove("active");
+          btn.setAttribute("aria-checked", "false");
         }
       });
     }
