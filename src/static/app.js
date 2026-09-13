@@ -59,12 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentTheme = theme === "dark" ? "dark" : "light";
     document.body.classList.toggle("dark-mode", currentTheme === "dark");
     themeToggle.setAttribute(
-      "aria-label",
-      currentTheme === "dark"
-        ? "Switch to light mode"
-        : "Switch to dark mode"
-    );
-    themeToggle.setAttribute(
       "aria-pressed",
       currentTheme === "dark" ? "true" : "false"
     );
