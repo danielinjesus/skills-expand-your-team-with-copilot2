@@ -568,6 +568,26 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        <div class="share-container">
+          <button class="share-button tooltip" data-activity="${name}" aria-label="Share this activity">
+            <span class="share-icon">🔗</span> Share
+            <span class="tooltip-text">Share this activity with friends</span>
+          </button>
+          <div class="share-menu hidden">
+            <button class="share-option" data-platform="twitter" data-activity="${name}">
+              <span class="share-option-icon">🐦</span> Twitter/X
+            </button>
+            <button class="share-option" data-platform="facebook" data-activity="${name}">
+              <span class="share-option-icon">📘</span> Facebook
+            </button>
+            <button class="share-option" data-platform="email" data-activity="${name}">
+              <span class="share-option-icon">✉️</span> Email
+            </button>
+            <button class="share-option" data-platform="copy" data-activity="${name}">
+              <span class="share-option-icon">📋</span> Copy Link
+            </button>
+          </div>
+        </div>
       </div>
     `;
 
@@ -587,8 +607,109 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Add click handler for share button
+    const shareButton = activityCard.querySelector(".share-button");
+    const shareMenu = activityCard.querySelector(".share-menu");
+    shareButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      handleShareButtonClick(name, details, shareMenu);
+    });
+
+    // Add click handlers for share options
+    const shareOptions = activityCard.querySelectorAll(".share-option");
+    shareOptions.forEach((option) => {
+      option.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const platform = option.dataset.platform;
+        shareActivity(platform, name, details);
+        shareMenu.classList.add("hidden");
+      });
+    });
+
     activitiesList.appendChild(activityCard);
   }
+
+  // Build a shareable text summary for an activity
+  function buildShareText(name, details) {
+    return `Check out "${name}" at Mergington High School! ${details.description}`;
+  }
+
+  // Handle click on the main share button - use native share sheet if available,
+  // otherwise toggle the custom share menu with platform options
+  async function handleShareButtonClick(name, details, shareMenu) {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: name,
+          text: buildShareText(name, details),
+          url: window.location.href,
+        });
+      } catch (error) {
+        // User cancelled the share, or share failed - no action needed
+      }
+      return;
+    }
+
+    // Close any other open share menus first
+    document.querySelectorAll(".share-menu").forEach((menu) => {
+      if (menu !== shareMenu) {
+        menu.classList.add("hidden");
+      }
+    });
+
+    shareMenu.classList.toggle("hidden");
+  }
+
+  // Share an activity via the selected platform
+  async function shareActivity(platform, name, details) {
+    const shareText = buildShareText(name, details);
+    const shareUrl = window.location.href;
+
+    switch (platform) {
+      case "twitter": {
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          shareText
+        )}&url=${encodeURIComponent(shareUrl)}`;
+        window.open(twitterUrl, "_blank", "noopener,noreferrer");
+        break;
+      }
+      case "facebook": {
+        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          shareUrl
+        )}`;
+        window.open(facebookUrl, "_blank", "noopener,noreferrer");
+        break;
+      }
+      case "email": {
+        const subject = `Check out ${name}!`;
+        const body = `${shareText}\n\n${shareUrl}`;
+        window.location.href = `mailto:?subject=${encodeURIComponent(
+          subject
+        )}&body=${encodeURIComponent(body)}`;
+        break;
+      }
+      case "copy": {
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          showMessage("Link copied to clipboard!", "success");
+        } catch (error) {
+          showMessage("Failed to copy link.", "error");
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  // Close any open share menus when clicking outside of them
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".share-container")) {
+      document.querySelectorAll(".share-menu").forEach((menu) => {
+        menu.classList.add("hidden");
+      });
+    }
+  });
 
   // Event listeners for search and filter
   searchInput.addEventListener("input", (event) => {
