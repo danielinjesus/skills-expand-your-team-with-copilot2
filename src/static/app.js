@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("activity-search");
   const searchButton = document.getElementById("search-button");
   const categoryFilters = document.querySelectorAll(".category-filter");
+  const difficultyFilter = document.getElementById("difficulty-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
 
@@ -40,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // State for activities and filters
   let allActivities = {};
   let currentFilter = "all";
+  let currentDifficulty = "";
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
@@ -88,6 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize filters from active elements
   function initializeFilters() {
+    if (difficultyFilter) {
+      currentDifficulty = difficultyFilter.value;
+    }
+
     // Initialize day filter
     const activeDayFilter = document.querySelector(".day-filter.active");
     if (activeDayFilter) {
@@ -129,6 +135,16 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.classList.remove("active");
       }
     });
+
+    fetchActivities();
+  }
+
+  function setDifficultyFilter(difficulty) {
+    currentDifficulty = difficulty;
+
+    if (difficultyFilter) {
+      difficultyFilter.value = difficulty;
+    }
 
     fetchActivities();
   }
@@ -430,6 +446,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      if (currentDifficulty) {
+        queryParams.push(`difficulty=${encodeURIComponent(currentDifficulty)}`);
+      }
+
       const queryString =
         queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
       const response = await fetch(`/activities${queryString}`);
@@ -652,6 +672,12 @@ document.addEventListener("DOMContentLoaded", () => {
       displayFilteredActivities();
     });
   });
+
+  if (difficultyFilter) {
+    difficultyFilter.addEventListener("change", (event) => {
+      setDifficultyFilter(event.target.value);
+    });
+  }
 
   // Add event listeners to day filter buttons
   dayFilters.forEach((button) => {
@@ -895,6 +921,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Expose filter functions to window for future UI control
   window.activityFilters = {
+    setDifficultyFilter,
     setDayFilter,
     setTimeRangeFilter,
   };
