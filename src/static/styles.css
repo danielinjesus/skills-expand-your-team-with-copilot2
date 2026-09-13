@@ -538,7 +538,6 @@ footer {
 }
 
 .category-filters,
-.difficulty-filters,
 .day-filters,
 .time-filters {
   display: flex;
@@ -546,8 +545,17 @@ footer {
   gap: 6px;
 }
 
+.difficulty-filter-select select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+}
+
 .category-filter,
-.difficulty-filter,
 .day-filter,
 .time-filter {
   background-color: var(--background);
@@ -559,18 +567,16 @@ footer {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .category-filter.active,
-.difficulty-filter.active,
+.category-filter.active,
 .day-filter.active,
 .time-filter.active {
   background-color: var(--primary);
   color: white;
   border-color: var(--primary-dark);
 }
-
 .category-filter:hover,
-.difficulty-filter:hover,
+.category-filter:hover,
 .day-filter:hover,
 .time-filter:hover {
   background-color: var(--primary-light);

@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("activity-search");
   const searchButton = document.getElementById("search-button");
   const categoryFilters = document.querySelectorAll(".category-filter");
-  const difficultyFilters = document.querySelectorAll(".difficulty-filter");
+  const difficultyFilter = document.getElementById("difficulty-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
 
@@ -55,11 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize filters from active elements
   function initializeFilters() {
-    const activeDifficultyFilter = document.querySelector(
-      ".difficulty-filter.active"
-    );
-    if (activeDifficultyFilter) {
-      currentDifficulty = activeDifficultyFilter.dataset.difficulty;
+    if (difficultyFilter) {
+      currentDifficulty = difficultyFilter.value;
     }
 
     // Initialize day filter
@@ -108,38 +105,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setDifficultyFilter(difficulty) {
-    if (currentDifficulty === difficulty) {
-      currentDifficulty = "";
-      difficultyFilters.forEach((btn) => {
-        btn.classList.remove("active");
-        btn.setAttribute("aria-checked", "false");
-        btn.tabIndex = -1;
-      });
-      if (difficultyFilters[0]) {
-        difficultyFilters[0].tabIndex = 0;
-      }
-    } else {
-      currentDifficulty = difficulty;
-      difficultyFilters.forEach((btn) => {
-        if (btn.dataset.difficulty === difficulty) {
-          btn.classList.add("active");
-          btn.setAttribute("aria-checked", "true");
-          btn.tabIndex = 0;
-        } else {
-          btn.classList.remove("active");
-          btn.setAttribute("aria-checked", "false");
-          btn.tabIndex = -1;
-        }
-      });
+    currentDifficulty = difficulty;
+
+    if (difficultyFilter) {
+      difficultyFilter.value = difficulty;
     }
 
     fetchActivities();
-  }
-
-  function focusDifficultyFilter(index) {
-    const normalizedIndex =
-      (index + difficultyFilters.length) % difficultyFilters.length;
-    difficultyFilters[normalizedIndex].focus();
   }
 
   // Check if user is already logged in (from localStorage)
@@ -663,30 +635,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  difficultyFilters.forEach((button) => {
-    button.tabIndex = -1;
-    button.addEventListener("click", () => {
-      setDifficultyFilter(button.dataset.difficulty);
-    });
-    button.addEventListener("keydown", (event) => {
-      const currentIndex = Array.from(difficultyFilters).indexOf(button);
-
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-        event.preventDefault();
-        focusDifficultyFilter(currentIndex + 1);
-      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-        event.preventDefault();
-        focusDifficultyFilter(currentIndex - 1);
-      } else if (event.key === " " || event.key === "Enter") {
-        event.preventDefault();
-        setDifficultyFilter(button.dataset.difficulty);
-      }
-    });
+  difficultyFilter.addEventListener("change", (event) => {
+    setDifficultyFilter(event.target.value);
   });
-
-  if (difficultyFilters[0]) {
-    difficultyFilters[0].tabIndex = 0;
-  }
 
   // Add event listeners to day filter buttons
   dayFilters.forEach((button) => {

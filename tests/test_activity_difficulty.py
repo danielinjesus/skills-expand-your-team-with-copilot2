@@ -154,6 +154,11 @@ class GetActivitiesDifficultyTests(unittest.TestCase):
 
         self.assertEqual(set(activities.keys()), {"Chess Club"})
 
+    def test_difficulty_filter_is_case_insensitive(self):
+        activities = activities_router.get_activities(difficulty="beginner")
+
+        self.assertEqual(set(activities.keys()), {"Chess Club", "Art Club", "Drama Club"})
+
 
 if __name__ == "__main__":
     unittest.main()
