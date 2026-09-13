@@ -9,6 +9,8 @@ sys.path.insert(0, str(REPO_SRC))
 from backend.routers import activities as activities_router
 from fastapi import HTTPException
 
+MISSING = object()
+
 
 class FakeActivitiesCollection:
     def __init__(self, documents):
@@ -39,9 +41,9 @@ class FakeActivitiesCollection:
                     return False
                 if "$lte" in value and field_value > value["$lte"]:
                     return False
-                if "$exists" in value and (field_value is not None) != value["$exists"]:
+                if "$exists" in value and (field_value is not MISSING) != value["$exists"]:
                     return False
-            elif field_value != value:
+            elif field_value is MISSING or field_value != value:
                 return False
 
         return True
@@ -52,10 +54,13 @@ class FakeActivitiesCollection:
             if isinstance(value, dict) and key in value:
                 value = value[key]
             else:
-                return None
+                return MISSING
         return value
 
     def _matches_in(self, field_value, expected_values):
+        if field_value is MISSING:
+            return False
+
         if isinstance(field_value, list):
             return any(item in expected_values for item in field_value)
 

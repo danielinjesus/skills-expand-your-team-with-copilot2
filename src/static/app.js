@@ -113,21 +113,33 @@ document.addEventListener("DOMContentLoaded", () => {
       difficultyFilters.forEach((btn) => {
         btn.classList.remove("active");
         btn.setAttribute("aria-checked", "false");
+        btn.tabIndex = -1;
       });
+      if (difficultyFilters[0]) {
+        difficultyFilters[0].tabIndex = 0;
+      }
     } else {
       currentDifficulty = difficulty;
       difficultyFilters.forEach((btn) => {
         if (btn.dataset.difficulty === difficulty) {
           btn.classList.add("active");
           btn.setAttribute("aria-checked", "true");
+          btn.tabIndex = 0;
         } else {
           btn.classList.remove("active");
           btn.setAttribute("aria-checked", "false");
+          btn.tabIndex = -1;
         }
       });
     }
 
     fetchActivities();
+  }
+
+  function focusDifficultyFilter(index) {
+    const normalizedIndex =
+      (index + difficultyFilters.length) % difficultyFilters.length;
+    difficultyFilters[normalizedIndex].focus();
   }
 
   // Check if user is already logged in (from localStorage)
@@ -652,10 +664,29 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   difficultyFilters.forEach((button) => {
+    button.tabIndex = -1;
     button.addEventListener("click", () => {
       setDifficultyFilter(button.dataset.difficulty);
     });
+    button.addEventListener("keydown", (event) => {
+      const currentIndex = Array.from(difficultyFilters).indexOf(button);
+
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+        event.preventDefault();
+        focusDifficultyFilter(currentIndex + 1);
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+        event.preventDefault();
+        focusDifficultyFilter(currentIndex - 1);
+      } else if (event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        setDifficultyFilter(button.dataset.difficulty);
+      }
+    });
   });
+
+  if (difficultyFilters[0]) {
+    difficultyFilters[0].tabIndex = 0;
+  }
 
   // Add event listeners to day filter buttons
   dayFilters.forEach((button) => {
