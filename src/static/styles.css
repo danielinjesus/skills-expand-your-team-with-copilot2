@@ -32,6 +32,24 @@
   --info-light: #d1ecf1;
 }
 
+body.dark-mode {
+  --primary: #0f172a;
+  --primary-light: #1e293b;
+  --primary-dark: #020617;
+  --background: #111827;
+  --surface: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border: #374151;
+  --border-light: #2b3544;
+  --border-focus: #4b5563;
+  --success-light: #123524;
+  --warning-light: #4a2f07;
+  --error-light: #4c1d1d;
+  --info-light: #12343b;
+  color-scheme: dark;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -48,6 +66,7 @@ body {
   padding: 12px;
   background-color: var(--background);
   font-size: 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 header {
@@ -476,6 +495,19 @@ footer {
   font-size: 0.8rem;
 }
 
+label {
+  color: var(--text-primary);
+}
+
+input {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
+input::placeholder {
+  color: var(--text-secondary);
+}
+
 /* Search and Filter Components - Updated for Sidebar */
 .search-box {
   display: flex;
@@ -610,6 +642,12 @@ footer {
   .sidebar-filters {
     width: 100%;
   }
+
+  #user-controls {
+    position: static;
+    margin-top: 10px;
+    align-self: flex-end;
+  }
 }
 
 /* User controls in header */
@@ -617,6 +655,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
@@ -648,6 +689,11 @@ footer {
 
 .icon-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+#theme-toggle {
+  min-width: 110px;
+  justify-content: center;
 }
 
 .user-icon {
