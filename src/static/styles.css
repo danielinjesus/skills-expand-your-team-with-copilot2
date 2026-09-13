@@ -568,14 +568,12 @@ footer {
   transition: all 0.2s ease;
 }
 .category-filter.active,
-.category-filter.active,
 .day-filter.active,
 .time-filter.active {
   background-color: var(--primary);
   color: white;
   border-color: var(--primary-dark);
 }
-.category-filter:hover,
 .category-filter:hover,
 .day-filter:hover,
 .time-filter:hover {

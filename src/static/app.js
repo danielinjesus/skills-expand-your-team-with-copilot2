@@ -635,9 +635,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  difficultyFilter.addEventListener("change", (event) => {
-    setDifficultyFilter(event.target.value);
-  });
+  if (difficultyFilter) {
+    difficultyFilter.addEventListener("change", (event) => {
+      setDifficultyFilter(event.target.value);
+    });
+  }
 
   // Add event listeners to day filter buttons
   dayFilters.forEach((button) => {
