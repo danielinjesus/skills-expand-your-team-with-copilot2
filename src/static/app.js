@@ -58,23 +58,32 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyTheme(theme) {
     currentTheme = theme === "dark" ? "dark" : "light";
     document.body.classList.toggle("dark-mode", currentTheme === "dark");
-    themeToggle.setAttribute(
-      "aria-pressed",
-      currentTheme === "dark" ? "true" : "false"
-    );
-    themeToggleIcon.textContent = currentTheme === "dark" ? "☀️" : "🌙";
-    themeToggleLabel.textContent =
-      currentTheme === "dark" ? "Light mode" : "Dark mode";
+
+    if (themeToggle && themeToggleIcon && themeToggleLabel) {
+      themeToggle.setAttribute(
+        "aria-pressed",
+        currentTheme === "dark" ? "true" : "false"
+      );
+      themeToggleIcon.textContent = currentTheme === "dark" ? "☀️" : "🌙";
+      themeToggleLabel.textContent =
+        currentTheme === "dark" ? "Light mode" : "Dark mode";
+    }
   }
 
   function initializeTheme() {
-    applyTheme(localStorage.getItem("theme"));
+    try {
+      applyTheme(localStorage.getItem("theme"));
+    } catch {
+      applyTheme("light");
+    }
   }
 
   function toggleTheme() {
     const nextTheme = currentTheme === "dark" ? "light" : "dark";
     applyTheme(nextTheme);
-    localStorage.setItem("theme", nextTheme);
+    try {
+      localStorage.setItem("theme", nextTheme);
+    } catch {}
   }
 
   // Initialize filters from active elements
@@ -264,7 +273,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loginButton.addEventListener("click", openLoginModal);
   logoutButton.addEventListener("click", logout);
   closeLoginModal.addEventListener("click", closeLoginModalHandler);
-  themeToggle.addEventListener("click", toggleTheme);
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
 
   // Close login modal when clicking outside
   window.addEventListener("click", (event) => {

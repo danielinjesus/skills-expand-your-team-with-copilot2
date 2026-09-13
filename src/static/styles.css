@@ -495,16 +495,21 @@ footer {
   font-size: 0.8rem;
 }
 
-label {
+#signup-form label,
+#login-form label {
   color: var(--text-primary);
 }
 
-input {
+#signup-form input,
+#login-form input,
+.search-box input {
   background-color: var(--surface);
   color: var(--text-primary);
 }
 
-input::placeholder {
+#signup-form input::placeholder,
+#login-form input::placeholder,
+.search-box input::placeholder {
   color: var(--text-secondary);
 }
 
