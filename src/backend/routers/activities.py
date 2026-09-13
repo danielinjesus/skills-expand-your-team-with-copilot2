@@ -13,12 +13,15 @@ router = APIRouter(
     tags=["activities"]
 )
 
+DIFFICULTY_LEVELS = ("Beginner", "Intermediate", "Advanced")
+
 @router.get("", response_model=Dict[str, Any])
 @router.get("/", response_model=Dict[str, Any])
 def get_activities(
     day: Optional[str] = None,
     start_time: Optional[str] = None,
-    end_time: Optional[str] = None
+    end_time: Optional[str] = None,
+    difficulty: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Get all activities with their details, with optional filtering by day and time
@@ -26,6 +29,8 @@ def get_activities(
     - day: Filter activities occurring on this day (e.g., 'Monday', 'Tuesday')
     - start_time: Filter activities starting at or after this time (24-hour format, e.g., '14:30')
     - end_time: Filter activities ending at or before this time (24-hour format, e.g., '17:00')
+    - difficulty: Filter by Beginner, Intermediate, Advanced, or All. Activities without a
+      difficulty are treated as available for every level.
     """
     # Build the query based on provided filters
     query = {}
@@ -38,6 +43,28 @@ def get_activities(
     
     if end_time:
         query["schedule_details.end_time"] = {"$lte": end_time}
+
+    if difficulty:
+        normalized_difficulty = difficulty.strip().lower()
+
+        if normalized_difficulty == "all":
+            query["difficulty"] = {"$exists": False}
+        else:
+            selected_level = next(
+                (level for level in DIFFICULTY_LEVELS if level.lower() == normalized_difficulty),
+                None
+            )
+
+            if not selected_level:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid difficulty. Expected one of: {', '.join(DIFFICULTY_LEVELS)}, All"
+                )
+
+            query["$or"] = [
+                {"difficulty": selected_level},
+                {"difficulty": {"$exists": False}}
+            ]
     
     # Query the database
     activities = {}
